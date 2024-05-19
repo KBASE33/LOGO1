@@ -66,6 +66,7 @@ const handleCreate = () => {
     /* background-color: #E3E3E3; */
     color: #4768FF;
     left: 10.42vw;
+    display: none;
 
 
 
@@ -77,6 +78,7 @@ const handleCreate = () => {
     color: white;
     right: 10.42vw;
     /* bottom: 85px; */
+    display:none;
 
 
 
