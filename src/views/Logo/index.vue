@@ -44,9 +44,13 @@ const drawStore = useDrawStore();
 let nowStep = ref(1);
 let showRipple = ref(false);
 const handleStep = (mystep) => {
+  
   // mystep的值为-1或1,对应改变nowStep的值
   console.log("mystep", mystep);
   nowStep.value += mystep;
+  if(nowStep.value==1 && mystep==-1){
+    window.location.reload();
+  }
 }
 
 
@@ -280,6 +284,7 @@ transform-origin: top right; /* 指定变换的原点 */
 
 .transcription-box {
 margin-top: 5vw;
+margin-left: -5vw;
 width: 100%;
 height: 30vw;
 display: flex;
