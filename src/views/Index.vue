@@ -66,6 +66,6 @@ const gotostart=()=>{
     color: white;
     font-size: 2.5vw; 
     letter-spacing: 0.5vw;
-    margin: 0.2vh 0;
+    bottom:0.2vh;
 }
 </style>
