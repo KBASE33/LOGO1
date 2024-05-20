@@ -17,12 +17,12 @@
       <div class="ripple-container" v-if="showRipple">
         <div class="ripple"></div>
       </div>
-      <img id="recordButton" @click="startRecording" @mouseup="stopRecording" @touchstart="startRecording" @touchend="stopRecording" src="@/assets/images/voice.png" class="record-button"/>
+      <img ref="recordButton" @touchstart="startRecording" @touchend="stopRecording" src="@/assets/images/voice.png" class="record-button"/>
     </div>
     <div v-if="nowStep===2">第二步</div>
     <div v-if="nowStep===3">第三步</div>
     <div v-if="nowStep===4">第四步</div>
-    <PageChangeComp :nowStep="nowStep" :total-steps="4" @change-step="handleStep" @start-create="handleCreate"></PageChangeComp>
+    <PageChangeComp :nowStep="nowStep" :total-steps="4" @change-step="handleStep" @start-create="handleCreate" v-if="button"></PageChangeComp>
 
   </div>
 </template>
@@ -38,6 +38,8 @@ import { getViewApi } from "@/api/userApi";
 import { useDrawStore } from "@/stores/drawStore";
 const router = useRouter();
 import { showNotify } from "vant";
+import { fa } from "element-plus/es/locales.mjs";
+import { addNumber } from "vant/lib/utils";
 const drawStore = useDrawStore();
 let nowStep = ref(1);
 let showRipple = ref(false);
@@ -49,13 +51,14 @@ const handleStep = (mystep) => {
 
 
 //录音
-const recordButton = ref(null);
+const recordButton = ref(false);
 const transcription = ref('');
 const showTranscription = ref(false);
 let recognition = new webkitSpeechRecognition();
 recognition.lang = 'zh-CN'; // 设置语言为中文
 
 let isRecording = false;
+let button = false;
 let lastTranscription = '';
 
 const startRecording = () => {
@@ -71,10 +74,16 @@ const startRecording = () => {
     let result = event.results[0][0].transcript;
     transcription.value = result;
     lastTranscription = result;
+    button=true;
+    recordButton.value.style.display = "none";
+    
   }
 
   recognition.onerror = function(event) {
     transcription.value = '发生错误，请重试。';
+    
+    showRipple.value = false;
+    
   }
 }
 
@@ -83,6 +92,8 @@ const stopRecording = () => {
   recognition.stop();
 
   showRipple.value = false;
+
+  
 
   if (lastTranscription.trim() === '') {
     showTranscription.value = false;
