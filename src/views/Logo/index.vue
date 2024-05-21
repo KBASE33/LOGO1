@@ -1,5 +1,5 @@
 <template>
-  <div class="logomain">
+  <div class="logomain" @contextmenu.prevent>
     <CommonHeader></CommonHeader>
     <div v-if="nowStep===1">
       <div class="message-box">
@@ -273,6 +273,7 @@ top: 150vw;
 .record{
 box-sizing: border-box;
 position: absolute;
+max-width: 50vw;
 padding: 10px;
 border: 0.2vw solid #4B6BFF;
 box-shadow: 0px 2px 3.1px 2px rgba(0, 0, 0, 0.11);
@@ -284,7 +285,7 @@ transform-origin: top right; /* 指定变换的原点 */
 
 .transcription-box {
 margin-top: 5vw;
-margin-left: -5vw;
+margin-left: -8vw;
 width: 100%;
 height: 30vw;
 display: flex;
