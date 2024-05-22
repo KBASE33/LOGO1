@@ -30,6 +30,7 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+import axios from 'axios';
 import { postGenerateApi } from "@/api/generateApi";
 import { getBlob } from "@/utils/getblob.js";
 import { ElLoading } from "element-plus";
@@ -54,55 +55,79 @@ const handleStep = (mystep) => {
 }
 
 
-//录音
+//录音设置
 const recordButton = ref(false);
 const transcription = ref('');
 const showTranscription = ref(false);
 let recognition = new webkitSpeechRecognition();
 recognition.lang = 'zh-CN'; // 设置语言为中文
 
-let isRecording = false;
 let button = false;
 let lastTranscription = '';
 
+const API_URL = `http://10.45.8.111:5003/RealTimeTranscript`;
+
+// 初始化MediaRecorder（录音功能）
+let mediaRecorder;
+let recordedChunks = [];
+
+navigator.mediaDevices.getUserMedia({ audio: true }).then((stream) => {
+  mediaRecorder = new MediaRecorder(stream);
+  mediaRecorder.addEventListener('dataavailable', (event) => {
+    recordedChunks.push(event.data);
+  });
+});
+
 const startRecording = () => {
-  isRecording = true;
   showTranscription.value = true;
   transcription.value = '......';
-
   showRipple.value = true;
-
-  recognition.start();
-
-  recognition.onresult = function(event) {
-    let result = event.results[0][0].transcript;
-    transcription.value = result;
-    lastTranscription = result;
-    button=true;
-    recordButton.value.style.display = "none";
-    
+  
+  if (!mediaRecorder) {
+    console.error('MediaRecorder not initialized');
+	showRipple.value = false;
+    return;
   }
-
-  recognition.onerror = function(event) {
-    transcription.value = '发生错误，请重试。';
-    
-    showRipple.value = false;
-    
-  }
-}
+  mediaRecorder.start();
+};
 
 const stopRecording = () => {
-  isRecording = false;
-  recognition.stop();
-
   showRipple.value = false;
 
-  
+  if (mediaRecorder) {
+    mediaRecorder.stop();
+    const audioBlob = new Blob(recordedChunks, { type: 'audio/wav' });
+    recordedChunks = [];
+
+    // 发送POST请求
+    const formData = new FormData();
+    formData.append('file', audioBlob, 'recording.wav');
+
+    axios.post(API_URL, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((response) => {
+      // 处理响应数据 
+      const transcript = response.data.transcript;
+      transcription.value = transcript;
+      lastTranscription = transcript;
+      button = true;
+      recordButton.value.style.display = "none";
+    })
+    .catch((error) => {
+      // 处理错误
+      console.error('语音识别请求失败:', error);
+      transcription.value = '发生错误，请重试。';
+      showRipple.value = false;
+    });
+  }
 
   if (lastTranscription.trim() === '') {
     showTranscription.value = false;
   }
-}
+};
 
 
 // 点击生成与后端交互
