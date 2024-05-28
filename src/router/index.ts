@@ -1,8 +1,10 @@
 import Index from '@/views/Index.vue'
+import Mytest from '@/views/Mytest.vue'
 // import Login from '@/views/Login.vue'
 // import Select from '@/views/Select.vue'
 import NotFound from '@/views/NotFound.vue'
 import Logo from '@/views/Logo/index.vue'
+import LogoSelect from '@/views/Logo/select.vue'
 import LogoView from '@/views/Logo/result.vue'
 
 // import Pack from '@/views/Pack/index.vue'
@@ -33,6 +35,16 @@ const router = createRouter({
       name: 'result',
       component: LogoView
     },
+    {
+      path: '/logo/select',
+      name: 'select',
+      component: LogoSelect
+    }, {
+      path: '/test',
+      name: 'test',
+      component: Mytest
+    },
+   
    
 
     { path: '/:pathMatch(.*)*', name: 'NotFound', component: NotFound },

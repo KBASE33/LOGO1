@@ -11,6 +11,8 @@
 
 <script setup lang="ts">
 import {reactive,ref} from 'vue'
+import {useRouter} from 'vue-router'
+const router=useRouter()
 
 defineProps({
     // 一共有几页
@@ -27,7 +29,8 @@ defineProps({
 // let stepchange=ref(0)
 const handleReset = () => {
     // 刷新页面
-    window.location.reload();
+    // window.location.reload();
+    router.push('/logo')
 }
 const emit = defineEmits(["changeStep","startCreate"]);
 const handleStep = (mystep:number) => {
