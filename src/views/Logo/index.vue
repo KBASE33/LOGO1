@@ -19,17 +19,7 @@
       </div>
       <img ref="recordButton" @touchstart="startRecording" @touchend="stopRecording" src="@/assets/images/voice.png" class="record-button"/>
     </div>
-    <div v-if="nowStep===2">
-      <div class="message-box">
-        <p class="message-box-text">常用标签预设推荐，如果合适请勾选。</p>
-      </div>
-      <div class="item-container1">
-              <div v-for="item in gridItems1" :key="item.name" class="xuanxiang1" @click="handleClick(item.name, 1)"
-                :class="{ selected: selectedName1 === item.name }">
-                {{ item.name }}
-              </div>
-            </div>
-    </div>
+    <div v-if="nowStep===2"></div>
     <div v-if="nowStep===3">第三步</div>
     <div v-if="nowStep===4">第四步</div>
     <PageChangeComp :nowStep="nowStep" :total-steps="4" @change-step="handleStep" @start-create="handleCreate" v-if="button"></PageChangeComp>
@@ -53,58 +43,6 @@ const router = useRouter();
 import { showNotify } from "vant";
 import { fa } from "element-plus/es/locales.mjs";
 import { addNumber } from "vant/lib/utils";
-
-//创建第一个网格数据
-const gridItems1 = ref([
-  { name: "三维" },
-  { name: "简易" },
-  { name: "抽象" },
-  { name: "塔罗牌" },
-  { name: "水彩" },
-]);
-
-const gridItems4 = ref([
-  { name: "复古风格" },
-  { name: "卡通" },
-  { name: "油画" },
-  { name: "新艺术运动" },
-  { name: "单色" },
-  { name: "剪影" },
-  { name: "强阴影" },
-])
-const selectedName1 = ref(null);
-//创建第二个网络数据
-const gridItems2 = ref([
-  { name: "红色" },
-  { name: "橙色" },
-  { name: "黄色" },
-  { name: "绿色" },
-  { name: "蓝色" },
-  { name: "紫色" },
-  { name: "黑色" },
-  { name: "棕色" },
-  { name: "粉色" },
-  { name: "金色" },
-  { name: "银色" },
-  { name: "白色" },
-]);
-const selectedName2 = ref(null);
-//创建第三个网络数据
-const gridItems3 = ref([
-  { name: "猫" },
-  { name: "云" },
-  { name: "狗" },
-  { name: "剑" },
-  { name: "树" },
-  { name: "鸟" },
-  { name: "拳" },
-  { name: "花" },
-  { name: "猴子" },
-  { name: "火箭" },
-  { name: "太阳" },
-  { name: "月亮" },
-]);
-const selectedName3 = ref(null);
 
 const drawStore = useDrawStore();
 let nowStep = ref(2);
@@ -397,36 +335,5 @@ display: flex;
 align-items: center;
 color: #585858;
 }
-
-.item-container1 {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  row-gap: 0vw;
-  column-gap: -20vw;
-  margin-top: 5vw;
-  margin-left: 5vw;
-}
-
-.xuanxiang1 {
-  position: relative;
-  display: flex; /* 使用 Flexbox 布局 */
-  justify-content: center; /* 水平居中 */
-  align-items: center; /* 垂直居中 */
-  width: 10vw; /* 确保整个区域可点击 */
-  height: 10vw;
-  border: none; /* 移除边框 */
-  padding: 10px;
-  font-size: 30px;
-  cursor: pointer;
-  overflow: hidden; /* 确保溢出部分被隐藏 */
-  writing-mode: vertical-lr; /* 设置垂直书写模式 */
-  text-orientation: mixed; /* 确保文字方向混合 */
-  background-image: url('src/assets/images/diamond.png'); /* 用你的图片路径替换 'src/assets/images/diamond.png' */
-  background-size: cover; /* 确保背景图案覆盖整个区域 */
-}
-.selected {
-  background-color: transparent; /* Remove background color */
-}
-
 
 </style>
