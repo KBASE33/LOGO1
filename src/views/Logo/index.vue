@@ -1,7 +1,7 @@
 <template>
   <div class="logomain" @contextmenu.prevent>
     <CommonHeader></CommonHeader>
-    <div v-if="nowStep===1">
+    <div >
       <div class="message-box">
         <p class="message-box-text">请向我描述您所需的logo模样。</p>
       </div>

@@ -1,7 +1,16 @@
 <template>
     <div class="logoresult">
       <CommonHeader></CommonHeader>
-      生成页
+      <div class="container">
+        <p>您的LOGO生成成功</p>
+        <div class="imgbox">
+          <img src="" alt="">
+          <img src="" alt="">
+          <img src="" alt="">
+          <img src="" alt="">
+
+        </div>
+      </div>
       <VanButton class="redraw"  @click="router.back()">重新生成</VanButton>
       <VanButton class="backtohome" @click="backtohome">回到主页</VanButton>
     </div>
@@ -62,4 +71,37 @@ const backtohome=()=>{
 
 
 }
+.container{
+  width: 77vw;
+    height: 79vw;
+    border: 2px solid rgb(200, 200, 200);
+    margin-left: 8vw;
+    margin-top: 8vw;
+    border-radius: 0 3vw 3vw 3vw;
+    box-shadow:1vw 1vw 1vw rgba(167, 167, 167, 0.3);
+}
+.container p{
+
+  font-size: 5vw;
+  margin: 3vw 5vw;
+}
+.imgbox{
+  display: flex;
+    justify-content: space-around;
+    align-content: space-around;
+    flex-wrap: wrap;
+    /* background-color: #4768FF; */
+    margin: 0 auto;
+    width: 82%;
+    height: 81%;
+
+}
+.imgbox img{
+  width:26vw;
+  height: 26vw;
+  /* margin-bottom: 2vw; */
+}
+
+
+
 </style>

@@ -46,7 +46,7 @@
         </div>
         <div v-if="nowStep === 3">第三步</div>
         <div v-if="nowStep === 4">第四步</div>
-        <PageChangeComp :nowStep="nowStep" :total-steps="4" @change-step="handleStep" @start-create="handleCreate">
+        <PageChangeComp :nowStep="nowStep" :total-steps="2" @change-step="handleStep" @start-create="handleCreate">
         </PageChangeComp>
 
     </div>
