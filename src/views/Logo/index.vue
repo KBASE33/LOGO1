@@ -19,13 +19,15 @@
       </div>
       <img ref="recordButton" @touchstart="startRecording" @touchend="stopRecording" src="@/assets/images/voice.png" class="record-button"/>
     </div>
-    <div v-if="nowStep===2">第二步</div>
+    <div v-if="nowStep===2"></div>
     <div v-if="nowStep===3">第三步</div>
     <div v-if="nowStep===4">第四步</div>
     <PageChangeComp :nowStep="nowStep" :total-steps="4" @change-step="handleStep" @start-create="handleCreate" v-if="button"></PageChangeComp>
 
   </div>
 </template>
+
+
 
 <script setup>
 import { ref } from "vue";
@@ -41,8 +43,9 @@ const router = useRouter();
 import { showNotify } from "vant";
 import { fa } from "element-plus/es/locales.mjs";
 import { addNumber } from "vant/lib/utils";
+
 const drawStore = useDrawStore();
-let nowStep = ref(1);
+let nowStep = ref(2);
 let showRipple = ref(false);
 const handleStep = (mystep) => {
   
