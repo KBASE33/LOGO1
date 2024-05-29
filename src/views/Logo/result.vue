@@ -4,10 +4,8 @@
       <div class="container">
         <p>您的LOGO生成成功</p>
         <div class="imgbox">
-          <img src="" alt="">
-          <img src="" alt="">
-          <img src="" alt="">
-          <img src="" alt="">
+          <img  v-for="(item,index) in drawStore.logooutputs" :key="index" :src="base.host+`/view?filename=${item.filename}&type=output`" alt="">
+         
 
         </div>
       </div>
@@ -22,6 +20,8 @@ import {ref} from 'vue'
 import { useDrawStore } from "@/stores/drawStore";
 import { showNotify, closeNotify } from 'vant';
 import { useRouter } from 'vue-router';
+import  base from '@/api/base';
+
 let drawStore = useDrawStore();
 const router=useRouter()
 const backtohome=()=>{

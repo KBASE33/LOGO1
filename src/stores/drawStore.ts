@@ -5,7 +5,8 @@ export const useDrawStore = defineStore('draw2', () => {
     
     const logoimgurl1 = ref('')
     const logoimgurl2 = ref('')
+    const logooutputs=ref([])
   
   
-    return { logoimgurl1,logoimgurl2}
+    return { logoimgurl1,logoimgurl2,logooutputs}
   },{persist:true})
