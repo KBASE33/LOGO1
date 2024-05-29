@@ -2,7 +2,7 @@
     <div class="logoresult">
       <CommonHeader></CommonHeader>
       生成页
-      <VanButton class="redraw">重新生成</VanButton>
+      <VanButton class="redraw"  @click="router.back()">重新生成</VanButton>
       <VanButton class="backtohome" @click="backtohome">回到主页</VanButton>
     </div>
 </template>
@@ -32,6 +32,9 @@ const backtohome=()=>{
     border-radius: 1vw; */
     /* top: 730px; */
     border:0.5vw solid #4768FF;
+    position: absolute;
+    /* bottom: 5vw; */
+    right:10vw;
 
 
 
@@ -41,6 +44,7 @@ const backtohome=()=>{
     /* background-color: #E3E3E3; */
     color: #4768FF;
     /* left: 10.42vw; */
+    bottom: 13vw;
 
 
 
@@ -52,6 +56,8 @@ const backtohome=()=>{
     color: white;
     /* right: 10.42vw; */
     /* bottom: 85px; */
+    bottom: 28vw;
+
 
 
 
