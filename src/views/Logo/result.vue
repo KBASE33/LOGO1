@@ -23,6 +23,7 @@ import { useRouter } from 'vue-router';
 import  base from '@/api/base';
 
 let drawStore = useDrawStore();
+
 const router=useRouter()
 const backtohome=()=>{
   router.push("/")
