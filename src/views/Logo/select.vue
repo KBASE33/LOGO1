@@ -1,6 +1,7 @@
 <template>
     <div class="logomain" @contextmenu.prevent>
         <CommonHeader></CommonHeader>
+        
         <div v-if="nowStep === 1">第一步</div>
         <div v-if="nowStep === 2">
             <div class="message-box">
@@ -19,19 +20,24 @@
                 </div>
             </div>
             <div class="item-container3">
+                <img src="@/assets/images/校标矢量文件_1.png" alt="" ref="cuzlogo" class="cuzlogo" @click="toggleLogoSelection('cuzlogo')">
                 <div v-for="item in gridItems5" :key="item.name" class="xuanxiang1" @click="handleClick1(item.name, 3)"
                     :class="{ selected: selectedName3 === item.name }">
                     {{ item.name }}
                 </div>
+                <img src="@/assets/images/工程中心LOGO_1.png" alt="" ref="logo2" class="logo2" @click="toggleLogoSelection('logo2')">
             </div>
 
             <div class="line"></div>
 
             <div class="item-container4">
+                <!-- 颜色 -->
+          
                 <div v-for="item in gridItems2" :key="item.name" class="xuanxiang2" @click="handleClick2(item.name, 4)"
-                    :class="{ selected: selectedName4 === item.name }">
+                    :class="{ selected: selectedName4 === item.name }" :style="`border-color: ${item.mycolor};color: ${selectedName4 === item.name?'white':item.mycolor};background-color: ${selectedName4 === item.name? item.mycolor : 'white'};`">
                     {{ item.name }}
                 </div>
+               
             </div>
 
             <div class="line"></div>
@@ -65,6 +71,29 @@ import { showNotify } from "vant";
 import { fa } from "element-plus/es/locales.mjs";
 import { addNumber } from "vant/lib/utils";
 import base from "@/api/base";
+const logoimg1=ref(null)
+    const logoimg2=ref(null)
+    const cuzlogo=ref(null)
+    const logo2=ref(null)
+onMounted(() => {
+     //logo加载
+   
+     // 确保图片加载完成后再操作Canvas
+     
+        // const ctx = cuzlogo.value.getContext('2d');
+        // cuzlogo.value.width = logoimg1.value.width;
+        // cuzlogo.value.height = logoimg1.value.height;
+        
+        // // 绘制图片到 Canvas
+        // ctx.drawImage(logoimg1.value, 0, 0);
+        
+        // // 获取绘制后的数据URL
+        // const dataURL = cuzlogo.value.toDataURL();
+        // console.log(dataURL);
+    
+});
+
+
 
 //创建第一个网格数据
 const gridItems1 = ref([
@@ -93,19 +122,20 @@ const selectedName5 = ref( '');
 
 //创建第二个网络数据
 const gridItems2 = ref([
-    { name: "红色" },
-    { name: "橙色" },
-    { name: "黄色" },
-    { name: "绿色" },
-    { name: "蓝色" },
-    { name: "紫色" },
-    { name: "黑色" },
-    { name: "棕色" },
-    { name: "粉色" },
-    { name: "金色" },
-    { name: "银色" },
-    { name: "白色" },
+    { name: "红色", mycolor: "#FF0000" },
+    { name: "橙色", mycolor: "#FFA500" },
+    { name: "黄色", mycolor: "#F8DD50" },
+    { name: "绿色", mycolor: "#008000" },
+    { name: "蓝色", mycolor: "#0000FF" },
+    { name: "紫色", mycolor: "#800080" },
+    { name: "黑色", mycolor: "#000000" },
+    { name: "棕色", mycolor: "#A52A2A" },
+    { name: "粉色", mycolor: "#FFC0CB" },
+    { name: "金色", mycolor: "#DEBD13" },
+    { name: "银色", mycolor: "#C0C0C0" },
+    { name: "白色", mycolor: "#D9D9D9" },
 ]);
+
 const selectedName2 = ref( '');
 //创建第三个网络数据
 const gridItems3 = ref([
@@ -202,7 +232,7 @@ const handleCreate = () => {
             "61": { "inputs": { "ipadapter_file": "ip-adapter_sdxl.safetensors" }, "class_type": "IPAdapterModelLoader" },
             "63": { "inputs": { "clip_name": "CLIP-ViT-bigG-14-laion2B-39B-b160k.safetensors" }, "class_type": "CLIPVisionLoader" },
             "3": { "inputs": { "weight": 0.6, "weight_type": "linear", "combine_embeds": "concat", "start_at": 0, "end_at": 1, "embeds_scaling": "V only", "model": ["27", 0], "ipadapter": ["61", 0], "image": ["2", 0], "clip_vision": ["63", 0] }, "class_type": "IPAdapterAdvanced" },
-            "2": { "inputs": { "image": "KUMO.jpg", "upload": "image" }, "class_type": "LoadImage" },
+            "2": { "inputs": { "image": logoname.value?logoname.value:"KUMO.jpg", "upload": "image" }, "class_type": "LoadImage" },
             "100": { "inputs": { "filename_prefix": "Logo", "images": ["52", 0] }, "class_type": "SaveImage" }
         }
     }
@@ -243,6 +273,13 @@ const handleCreate = () => {
         showNotify({ type: "danger", message: "提交失败,请重试" });
 
     })
+
+    
+
+
+   
+            
+       
 
     // let myweight = 0.6
     // //  不存在图片weight就为0
@@ -322,6 +359,29 @@ const handleCreate = () => {
     //     loadingInstance.close();
     //   });
 };
+const logoname=ref('')
+const toggleLogoSelection = (logoRef) => {
+    clearLogoSelections();
+    switch (logoRef) {
+        case 'cuzlogo':
+            cuzlogo.value.classList.add('logoselected');
+            logoname.value='cuz.png'
+            break;
+        case 'logo2':
+            logo2.value.classList.add('logoselected');
+            logoname.value='gczx.png'
+
+            break;
+        default:
+            break;
+    }
+};
+
+const clearLogoSelections = () => {
+    cuzlogo.value.classList.remove('logoselected');
+    logo2.value.classList.remove('logoselected');
+};
+
 
 </script>
 
@@ -399,6 +459,8 @@ const handleCreate = () => {
     grid-row-gap: 1.5vw;
     margin-top: 2vw;
     margin-left: 4vw;
+    justify-items: center; /* 水平居中 */
+    align-items: center; /* 垂直居中 */
 }
 
 .item-container4 .selected {
@@ -482,6 +544,8 @@ const handleCreate = () => {
 
 .selected {
     background-color: #92b0fd;
+    // background:linear-gradient( #92b0fd, #f2f2f2);
+    color: aliceblue
 }
 
 .line {
@@ -494,5 +558,29 @@ const handleCreate = () => {
     // color: var(--el-color-primary);
     font-size: 4vw !important;
     margin: 3px 0;
+}
+.item-container3 img {
+    width: 14vw;
+    // height: 12vw; /* 与宽度相同，保持正方形 */
+    position: absolute;
+    top:96.5vw;
+    // background-color: #b52f2f;
+    display: block;
+    box-sizing: border-box;
+}
+.item-container3 .cuzlogo{
+    left: 5vw;
+    top:103vw;
+
+
+}
+.logo2{
+    left: 81vw;
+}
+.logobox,.cuzlogo img{
+    position: absolute;
+}
+.logoselected{
+    border: 5px solid #4768FF
 }
 </style>
