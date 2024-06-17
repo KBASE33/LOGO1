@@ -1,7 +1,9 @@
 <template>
     <div class="logomain" @contextmenu.prevent>
         <CommonHeader></CommonHeader>
-        
+        <p class="loadingtext" ref="loadingtext">
+            {{ loadingprogress }}%
+        </p>
         <div v-if="nowStep === 1">第一步</div>
         <div v-if="nowStep === 2">
             <div class="message-box">
@@ -207,13 +209,17 @@ const mystring=ref('')
 const websocket = ref(null);
     const receivedMessage = ref('');
    
-
+    const loadingprogress=ref(0)
+    const loadingtext=ref(null)
 // 点击生成与后端交互
 const handleCreate = () => {
+   
     const loadingInstance = ElLoading.service({
     fullscreen: true,
-    // text: "正在努力绘画中...",
+    // text: loadingprogress.value+'%',
   });
+  loadingtext.value.style.display='block'
+  
     mystring.value=selectedName1.value + ',' + selectedName2.value + ',' + selectedName3.value + ',' + selectedName4.value + ',' + selectedName5.value;
     // router.push('/logo/view')
     console.log(selectedName1.value, selectedName2.value, selectedName3.value, selectedName4.value, selectedName5.value);
@@ -232,7 +238,8 @@ const handleCreate = () => {
             "61": { "inputs": { "ipadapter_file": "ip-adapter_sdxl.safetensors" }, "class_type": "IPAdapterModelLoader" },
             "63": { "inputs": { "clip_name": "CLIP-ViT-bigG-14-laion2B-39B-b160k.safetensors" }, "class_type": "CLIPVisionLoader" },
             "3": { "inputs": { "weight": 0.6, "weight_type": "linear", "combine_embeds": "concat", "start_at": 0, "end_at": 1, "embeds_scaling": "V only", "model": ["27", 0], "ipadapter": ["61", 0], "image": ["2", 0], "clip_vision": ["63", 0] }, "class_type": "IPAdapterAdvanced" },
-            "2": { "inputs": { "image": logoname.value?logoname.value:"KUMO.jpg", "upload": "image" }, "class_type": "LoadImage" },
+            // "2": { "inputs": { "image": logoname.value?logoname.value:"KUMO.jpg", "upload": "image" }, "class_type": "LoadImage" },
+            "2": { "inputs": { "image": "KUMO.jpg", "upload": "image" }, "class_type": "LoadImage" },
             "100": { "inputs": { "filename_prefix": "Logo", "images": ["52", 0] }, "class_type": "SaveImage" }
         }
     }
@@ -249,8 +256,16 @@ const handleCreate = () => {
         if(receivedMessage.value.type==='executed'){
             drawStore.logooutputs=receivedMessage.value.data.output.images
             console.log("绘图成功",drawStore.logooutputs)
-            loadingInstance.close()
+            setTimeout(()=>{
+                loadingInstance.close()
             router.push('/logo/view')
+            },500)
+          
+        }
+        else{
+            loadingprogress.value+=6
+            console.log("loadingprogress.value",loadingprogress.value);
+            loadingInstance.text=loadingprogress.value+'%'
         }
       };
       websocket.value.onclose = () => {
@@ -551,7 +566,7 @@ const clearLogoSelections = () => {
 .line {
     border: 0.2vw solid #e0e0e0;
     margin-top: 2vw;
-    margin-left: 3vw;
+    margin-left: 5vw;
     width: 88vw;
 }
 .el-loading-spinner .el-loading-text {
@@ -570,7 +585,7 @@ const clearLogoSelections = () => {
 }
 .item-container3 .cuzlogo{
     left: 5vw;
-    top:103vw;
+    // top:103vw;
 
 
 }
@@ -583,4 +598,19 @@ const clearLogoSelections = () => {
 .logoselected{
     border: 5px solid #4768FF
 }
+.loadingtext{
+    height: 6vw;
+    width: 6vw;
+    text-align: center;
+    font-size: 4vw;
+    position: absolute;
+    left: 50%;
+    top: 55%;
+    margin-left: -3vw;
+    margin-top: -3vw;
+    color: #1989fa;
+    z-index: 9999;
+    display: none
+}
+
 </style>
