@@ -232,7 +232,7 @@ const handleCreate = () => {
             "25": { "inputs": { "text": "", "clip": ["27", 1] }, "class_type": "CLIPTextEncode" },
             "26": { "inputs": { "samples": ["21", 0], "vae": ["22", 2] }, "class_type": "VAEDecode" },
             "27": { "inputs": { "lora_name": "LogoRedmondV2-Logo-LogoRedmAF.safetensors", "strength_model": 1, "strength_clip": 1, "model": ["60", 0], "clip": ["60", 1] }, "class_type": "LoraLoader" },
-            "1": { "inputs": { "from_translate": "chinese simplified", "to_translate": "english", "add_proxies": "disable", "proxies": "", "auth_data": "", "service": "MyMemoryTranslator [free]", "text": "logo,"+voicetext+mystring.value, "Show proxy": "proxy_hide", "Show authorization": "authorization_hide", "clip": ["27", 1] }, "class_type": "DeepTranslatorCLIPTextEncodeNode" },
+            "1": { "inputs": { "from_translate": "chinese simplified", "to_translate": "english", "add_proxies": "disable", "proxies": "", "auth_data": "", "service": "MyMemoryTranslator [free]", "text": "logo,"+voicetext+","+mystring.value, "Show proxy": "proxy_hide", "Show authorization": "authorization_hide", "clip": ["27", 1] }, "class_type": "DeepTranslatorCLIPTextEncodeNode" },
             "52": { "inputs": { "detail_method": "VITMatte(local)", "detail_erode": 1, "detail_dilate": 1, "black_point": 0.01, "white_point": 0.02, "process_detail": true, "image": ["26", 0] }, "class_type": "LayerMask: RmBgUltra V2" },
             "60": { "inputs": { "lora_name": "Hyper-SDXL-8steps-lora.safetensors", "strength_model": 0.7000000000000001, "strength_clip": 1, "model": ["22", 0], "clip": ["22", 1] }, "class_type": "LoraLoader" },
             "61": { "inputs": { "ipadapter_file": "ip-adapter_sdxl.safetensors" }, "class_type": "IPAdapterModelLoader" },
@@ -277,6 +277,7 @@ const handleCreate = () => {
         console.error('WebSocket error:', error);
         loadingInstance.close()
         showNotify({ type: "danger", message: "绘图失败,请重试" });
+        loadingtext.style.display='none'
 
 
       };
@@ -286,6 +287,8 @@ const handleCreate = () => {
         console.log("提交文字失败",err)
         loadingInstance.close()
         showNotify({ type: "danger", message: "提交失败,请重试" });
+        loadingtext.style.display='none'
+
 
     })
 
