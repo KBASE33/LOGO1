@@ -2,8 +2,14 @@
   <div class="logomain">
     <CommonHeader></CommonHeader>
     <div>
+      <div class="background">
+        <img src="@/assets/images/item.png" style="height: 9vw; width: 9vw; padding: 0vw;">
+      </div>
       <div class="message-box">
-        <p class="message-box-text">请向我描述您所需的logo模样。</p>
+        <div id="textContainer" ref="textContainer" class="message-box-text"></div>
+        <audio id="audioPlayer" ref="audioRef" autoplay>
+          <source src="@/assets/voice/first4.wav">
+        </audio>
       </div>
       <p class="example-title">案例参考</p>
       <p class="example-text">小鸭子坐在火车上&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;三层简约蛋糕切片
@@ -14,15 +20,13 @@
           <span class="record-text">{{ transcription }}</span>
         </div>
       </div>
-      <div class="ripple-container" v-if="showRipple">
-        <div class="ripple"></div>
-      </div>
-      <img ref="recordButton" @touchstart="startRecording" @touchend="stopRecording" src="@/assets/images/voice.png" class="record-button"/>
+      <div class="ripple" v-if="showRipple"></div>
+      
     </div>
-    <div class="buttons" v-if="button">
-      <VanButton class="resetbtn" @click="handleReset">重新输入</VanButton>
-        <VanButton class="createbtn"  @click="router.push('/logo/select')">下一步</VanButton>
-    </div>
+    <img :src="recordingIcon" ref="recordButton" @click="toggleRecording" class="record-button"/>
+    <img @click="router.push('/')" src="@/assets/images/back.png" class="back-button"/>
+    <img @click="router.push('/logo/select')" v-if="button" src="@/assets/images/next.png" class="next-button"/>
+
     
     <!-- <div v-if="nowStep===2">第二步</div>
     <div v-if="nowStep===3">第三步</div>
@@ -47,7 +51,14 @@ import { showNotify } from "vant";
 import { fa } from "element-plus/es/locales.mjs";
 import { addNumber } from "vant/lib/utils";
 import { useDrawStore } from "@/stores/drawStore";
+import recordIcon from "@/assets/images/voice.png";
+import pauseIcon from "@/assets/images/stop.png";
 const router = useRouter();
+const audioRef = ref(null);
+const text = '您好，我是浙小船。请先使用语音\n输入需求，我将为您生成专属logo'; // 使用 \n 来分隔不同的行
+const textContainer = ref(null);
+const lineWidth = '50vw'; // 设置每行文本的宽度
+let currentLine = '';
 let nowStep = ref(1);
 let showRipple = ref(false);
 const handleReset = () => {
@@ -65,7 +76,24 @@ const handleStep = (mystep) => {
   }
 }
 
-const recordButton = ref(false);
+let index = 0;
+  const intervalId = setInterval(() => {
+    if (index < text.length) {
+      currentLine += text[index];
+      if (currentLine.includes('\n')) {
+        textContainer.value.innerHTML += `<span style="display:inline-block; width:${lineWidth};">${currentLine.replace('\n', '')}</span><br>`;
+        currentLine = '';
+      }
+      index++;
+    } else {
+      clearInterval(intervalId);
+      if (currentLine !== '') {
+        textContainer.value.innerHTML += `<span style="display:inline-block; width:${lineWidth};">${currentLine}</span>`;
+      }
+    }
+  }, 25); // 每个字符间隔500毫秒
+  
+let recordButton = false;
 const transcription = ref('');
 const showTranscription = ref(false);
 let recognition = new webkitSpeechRecognition();
@@ -75,13 +103,27 @@ let isRecording = false;
 let button = false;
 let lastTranscription = '';
 const drawStore=useDrawStore()
+const recordingIcon = ref(recordIcon);
+
+
+const toggleRecording = () =>{
+    if(isRecording){
+      showRipple.value = false;
+      stopRecording();
+    }else{
+      button=false;
+      audioRef.value.pause(); // 暂停音频播放
+      audioRef.value.currentTime = 0; // 重置音频播放位置
+      startRecording();
+    }
+}
+
 const startRecording = () => {
   isRecording = true;
   showTranscription.value = true;
   transcription.value = '......';
-
+  recordingIcon.value = pauseIcon;
   showRipple.value = true;
-
   recognition.start();
 
   recognition.onresult = function(event) {
@@ -89,31 +131,27 @@ const startRecording = () => {
     transcription.value = result;
     drawStore.voiceinput=result
     lastTranscription = result;
+    showRipple.value = false;
     button=true;
-    recordButton.value.style.display = "none";
+    
     
   }
-
   recognition.onerror = function(event) {
-    transcription.value = '发生错误，请重试。';
-    
+    transcription.value = '语音未识别成功，请重新输入';
     showRipple.value = false;
-    
+    recordingIcon.value = recordIcon;
   }
 }
 
 const stopRecording = () => {
   isRecording = false;
   recognition.stop();
-
-  showRipple.value = false;
-
-  
-
+  recordingIcon.value = recordIcon;
   if (lastTranscription.trim() === '') {
     showTranscription.value = false;
   }
 }
+
 
 // 点击生成与后端交互
 const handleCreate = () => {
@@ -201,32 +239,58 @@ router.push('/logo/view')
 
 <style lang="scss" scoped>
 
-.message-box{
-box-sizing: border-box;
+.background{
+  background-color: rgb(226, 222, 216);
+  width: 9vw;
+  height: 10vw;
+  border:0.1vw solid #a2a3a7;
+  border-radius: 2vw;
+}
+
+.message-box {
+display: flex;
+justify-content: center;
+align-items: center;
 height: 20vw;
 width: 60vw;
-margin-left: 5vw;
-margin-top: 2vw;
+margin-left: 10vw;
+margin-top: -8vw;
 border: 1px solid #464646;
 box-shadow: 0px 2px 3.1px 2px rgba(0, 0, 0, 0.11);
 border-radius: 0px 15px 15px 15px;
+animation: dynamicWidth 1.2s linear;
 }
-
-.message-box-text{
-width: 55vw;
-height: 30vw;
-padding: 3.5vw;
+.message-box-text {
+overflow: hidden;
+height: 12vw;
+padding: 5vw;
+margin-top: -6vw;
 font-family: 'Source Han Sans CN VF';
 font-style: normal;
 font-weight: bold;
-font-size: 4vw;
+font-size: 3.2vw;
 line-height: 6vw;
 letter-spacing: 0.1vw;
 color: #585858;
 }
+@keyframes dynamicWidth {
+0% {
+left: 0;
+width: 2vw;
 
+}
+100% {
+left: 100%;
+width: 50vw;
+
+}
+      }
+@keyframes typewriter {
+  0% {width: 0; height: 5vw;}
+  100% { width: 100%;height: 5vw; }
+}
 .example-title{
-margin-left: 6.5vw;
+margin-left:3vw;
 margin-top: 1.5vw;
 font-family: 'Inter';
 font-style: normal;
@@ -237,7 +301,7 @@ color: #4D4D4D;
 }
 
 .example-text{
-margin-left:7.5vw;
+margin-left:4vw;
 margin-top: -0.5vw;
 font-family: 'Source Han Sans CN VF';
 font-style: normal;
@@ -249,24 +313,19 @@ color: #252525;
 
 
 .record-button {
-position: fixed;
+position: absolute;
 left: 46vw;
 top: 150vw;
-}
-
-.ripple-container {
-  top: 50vw;
-  left: 50vw;
-  width: 100%;
-  height: 100%;
-  background-color: #ffffff;
+width: 10vw;
+height:10vw;
 }
 
 .ripple {
-  margin-top: 33vw;
-  margin-left: 51vw;
-  width: 20px;
-  height: 20px;
+  position: absolute;
+  top: 154.4vw;
+  left: 50.3vw;
+  width: 1.4vw;
+  height:1.4vw;
   background-color: #4B6BFF;
   border-radius: 50%;
   transform: scale(6);
@@ -352,5 +411,21 @@ color: #585858;
 
 
 
+}
+
+.next-button {
+position: absolute;
+left: 70vw;
+top: 150vw;
+width: 10vw;
+height:10vw;
+}
+
+.back-button {
+position: absolute;
+left: 22vw;
+top: 150vw;
+width: 10vw;
+height:10vw;
 }
 </style>
