@@ -15,17 +15,17 @@
       <p class="example-text">小鸭子坐在火车上&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;三层简约蛋糕切片
         &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;三文鱼和叉子
         <br>小猫坐在船上，旁边散落一些花瓣</p>
-      <div class="transcription-box" v-if="transcription !== ''">
+      <div class="transcription-box" v-show="transcription !== ''">
         <div id="transcription" class="record">
           <span class="record-text">{{ transcription }}</span>
         </div>
       </div>
-      <div class="ripple" v-if="showRipple"></div>
+      <div class="ripple" v-show="showRipple"></div>
       
     </div>
-    <img :src="recordingIcon" ref="recordButton" @click="toggleRecording" class="record-button"/>
+    <img :src="recordIcon" ref="recordButton" @click="toggleRecording" class="record-button"/>
     <img @click="router.push('/')" src="@/assets/images/back.png" class="back-button"/>
-    <img @click="router.push('/logo/select')" v-if="button" src="@/assets/images/next.png" class="next-button"/>
+    <img @click="router.push('/logo/select')" v-show="button" src="@/assets/images/next.png" class="next-button"/>
 
     
     <!-- <div v-if="nowStep===2">第二步</div>
@@ -61,6 +61,17 @@ const lineWidth = '50vw'; // 设置每行文本的宽度
 let currentLine = '';
 let nowStep = ref(1);
 let showRipple = ref(false);
+let recordButton = ref(false);
+const transcription = ref('');
+const showTranscription = ref(false);
+let recognition = new webkitSpeechRecognition();
+recognition.lang = 'zh-CN'; // 设置语言为中文
+
+let isRecording = false;
+let button = false;
+let lastTranscription = '';
+const drawStore=useDrawStore()
+const recordingIcon = ref(recordIcon);
 const handleReset = () => {
     // 刷新页面
     window.location.reload();
@@ -75,6 +86,12 @@ const handleStep = (mystep) => {
     window.location.reload();
   }
 }
+
+onMounted(() => {
+ if (audioRef.value) {
+   audioRef.value.volume = 0.7;
+ }
+});
 
 let index = 0;
   const intervalId = setInterval(() => {
@@ -93,18 +110,6 @@ let index = 0;
     }
   }, 25); // 每个字符间隔500毫秒
   
-let recordButton = false;
-const transcription = ref('');
-const showTranscription = ref(false);
-let recognition = new webkitSpeechRecognition();
-recognition.lang = 'zh-CN'; // 设置语言为中文
-
-let isRecording = false;
-let button = false;
-let lastTranscription = '';
-const drawStore=useDrawStore()
-const recordingIcon = ref(recordIcon);
-
 
 const toggleRecording = () =>{
     if(isRecording){
@@ -240,7 +245,7 @@ router.push('/logo/view')
 <style lang="scss" scoped>
 
 .background{
-  background-color: rgb(226, 222, 216);
+  background-color: rgb(224, 223, 221);
   width: 9vw;
   height: 10vw;
   border:0.1vw solid #a2a3a7;

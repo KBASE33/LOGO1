@@ -1,6 +1,9 @@
 <template>
     <div class="logoresult">
       <CommonHeader></CommonHeader>
+      <div class="background">
+        <img src="@/assets/images/item.png" style="height: 9vw; width: 9vw; padding: 0vw;">
+        </div>
       <div class="container">
         <p>您的LOGO生成成功</p>
         <div class="imgbox">
@@ -31,6 +34,14 @@ const backtohome=()=>{
 </script>
 
 <style scoped>
+.background{
+  background-color: rgb(224, 223, 221);
+  width: 9vw;
+  height: 10vw;
+  border:0.1vw solid #a2a3a7;
+  border-radius: 2vw;
+}
+
 .van-button {
     width: 32.4vw;
     height: 9.72vw;
@@ -42,9 +53,8 @@ const backtohome=()=>{
     border-radius: 1vw; */
     /* top: 730px; */
     border:0.5vw solid #4768FF;
-    position: absolute;
+    position: relative;
     /* bottom: 5vw; */
-    right:10vw;
 
 
 
@@ -54,7 +64,8 @@ const backtohome=()=>{
     /* background-color: #E3E3E3; */
     color: #4768FF;
     /* left: 10.42vw; */
-    bottom: 13vw;
+    bottom: -13vw;
+    left:52.5vw;
 
 
 
@@ -66,9 +77,8 @@ const backtohome=()=>{
     color: white;
     /* right: 10.42vw; */
     /* bottom: 85px; */
-    bottom: 28vw;
-
-
+    bottom: -2vw;
+    left:20vw;
 
 
 }
@@ -76,8 +86,8 @@ const backtohome=()=>{
   width: 77vw;
     height: 79vw;
     border: 2px solid rgb(200, 200, 200);
-    margin-left: 8vw;
-    margin-top: 8vw;
+    margin-left: 10vw;
+    margin-top: -5vw;
     border-radius: 0 3vw 3vw 3vw;
     box-shadow:1vw 1vw 1vw rgba(167, 167, 167, 0.3);
 }

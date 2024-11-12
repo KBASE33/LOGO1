@@ -5,7 +5,7 @@ export const useDrawStore = defineStore('draw2', () => {
     
     const logoimgurl1 = ref('')
     const logoimgurl2 = ref('')
-    const logooutputs=ref([])
+    const logooutputs=ref<any>([])
     const voiceinput=ref('')
   
   

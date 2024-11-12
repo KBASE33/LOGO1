@@ -1,6 +1,10 @@
 <template>
     <div>
       <div class="container">
+        <img src="@/assets/images/background.png" style="position: absolute;height: 100vh;width: 100vw;" alt="">
+        <img src="@/assets/images/logo1.png" style="position: absolute;left: -2vw;width: 80vw;bottom:88vh;" alt="">
+        <img src="@/assets/images/title.png" style="position:absolute;bottom: 64vh; left: 10vw; width:60vw;height:40vw;" alt="">
+
         <transition name="fade">
           <div v-if="showDetails" class="details">
             <p>通过普通输入以及其它的途径，来实现生成是LOGO的效果</p>
@@ -24,9 +28,7 @@
           <p>李牧展 顾菁仪 宋鹏伟 张洛 杨云戈</p>
         </div>
   
-        <img src="@/assets/images/background.png" style="height: 100vh;width: 100vw;" alt="">
-        <img src="@/assets/images/logo.png" style="position: absolute;left: 0;width: 80vw;margin: 0 2vw;" alt="">
-        <img src="@/assets/images/title.png" style="position: absolute;top: 15vh; left: 14vw; width: 70vw; margin: 0 2vw;" alt="">
+        
       </div>
     </div>
   </template>
@@ -51,7 +53,7 @@
   
   <style scoped>
   .container {
-    position: relative;
+    position:relative;
     display: flex;
     justify-content: center;
     width: 100vw;
@@ -68,7 +70,7 @@
     border: none;
     border-radius: 10px;
     letter-spacing: 1vw;
-    position: absolute;
+    position:relative;
     background-color: rgba(255, 255, 255, 0.312);
   }
   
@@ -118,7 +120,7 @@
   .details {
     position: absolute;
     font-family: '方正黑体简体';
-    top: 42vh;
+    top: 58vh;
     padding: 10px;
     width: 75vw;
     letter-spacing: 0.8vw;

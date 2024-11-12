@@ -6,6 +6,9 @@
         </p>
         <div v-if="nowStep === 1">第一步</div>
         <div v-if="nowStep === 2">
+        <div class="background">
+        <img src="@/assets/images/item.png" style="height: 9vw; width: 9vw; padding: 0vw;">
+        </div>
             <div class="message-box">
                 <div id="textContainer" ref="textContainer" class="message-box-text"></div>
                 <audio id="audioPlayer" ref="audioRef" autoplay>
@@ -92,30 +95,10 @@ const lineWidth = '50vw'; // 设置每行文本的宽度
 let currentLine = '';
 
 onMounted(() => {
- // 设置音量为固定值，例如 0.5 (50%)
  if (audioRef.value) {
-   audioRef.value.volume = 0.6;
+   audioRef.value.volume = 1;
  }
 });
-
-onMounted(() => {
-     //logo加载
-   
-     // 确保图片加载完成后再操作Canvas
-     
-        // const ctx = cuzlogo.value.getContext('2d');
-        // cuzlogo.value.width = logoimg1.value.width;
-        // cuzlogo.value.height = logoimg1.value.height;
-        
-        // // 绘制图片到 Canvas
-        // ctx.drawImage(logoimg1.value, 0, 0);
-        
-        // // 获取绘制后的数据URL
-        // const dataURL = cuzlogo.value.toDataURL();
-        // console.log(dataURL);
-    
-});
-
 
 
 //创建第一个网格数据
@@ -176,7 +159,6 @@ const gridItems3 = ref([
 const selectedName3 = ref( '');
 
 const handleClick1 = (name, gridNumber) => {
-
     clearSelections();
 
     if (gridNumber === 1) {
@@ -193,6 +175,7 @@ const handleClick1 = (name, gridNumber) => {
     }
 };
 
+
 const clearSelections = () => {
     selectedName1.value =  '';
     selectedName2.value =  '';
@@ -207,6 +190,7 @@ const handleClick2 = (name, gridNumber) => {
         selectedName5.value = name;
     }
 };
+
 
 const drawStore = useDrawStore();
 let voicetext=drawStore.voiceinput
@@ -225,62 +209,6 @@ const handleStep = (mystep) => {
         router.push('/logo')
     }
 }
-
-let textaudio;
-var myHeaders = new Headers();
-myHeaders.append("Host", "10.1.249.1:9966");
-myHeaders.append("Connection", "close");
-
-var formdata = new FormData();
-formdata.append("text", "正在为您生成描述"+voicetext+"的logo，请稍等一下哦");
-formdata.append("voice", "147");
-
-var requestOptions = {
-  method: 'POST',
-  headers: myHeaders,
-  body: formdata,
-  redirect: 'follow'
-};
-
-fetch("http://10.1.249.1/tts", requestOptions)
-  .then(response => response.text())
-  .then(result => {
-    // 假设result包含多个链接，我们需要从中提取出.wav音频链接
-    var additionalElement = ":9966";
-    var indexToInsert = 200; // 从0开始计数
-    
-
-    // 使用slice()方法获取前半部分和后半部分
-    var firstHalf = result.slice(0, indexToInsert);
-    var secondHalf = result.slice(indexToInsert);
-
-    // 使用concat()方法拼接
-    result = firstHalf + additionalElement + secondHalf;
-
-    // 使用正则表达式或字符串分割方法来提取链接
-    var urlLinks = result.match(/http[s]?:\/\/[^\s"]+\.wav/i);
-    console.log(result);
-    console.log(urlLinks);
-
-    // 如果没有找到任何.wav链接，则退出函数
-    if (!urlLinks || urlLinks.length === 0) {
-      console.log('No .wav links found in the result.');
-      return;
-    }
-
-    // 遍历每个提取出的链接
-    urlLinks.forEach(link => {
-      // 创建Audio对象并设置src属性为链接
-      textaudio = new Audio(link);
-
-      // 捕获并处理错误
-      textaudio.onerror = function() {
-        console.log('Error playing audio:', link);
-      };
-    });
-  })
-  .catch(error => console.log('error', error));
-
 
 let index = 0;
   const intervalId = setInterval(() => {
@@ -305,20 +233,41 @@ const websocket = ref(null);
    
     const loadingprogress=ref(0)
     const loadingtext=ref(null)
+
 // 点击生成与后端交互
 const handleCreate = () => {
-   
-    const loadingInstance = ElLoading.service({
+audioRef.value.pause(); // 暂停音频播放
+audioRef.value.currentTime = 0; // 重置音频播放位置
+
+//生成界面语音播放
+const result = ref('')
+console.log(selectedName1.value, selectedName2.value, selectedName3.value, selectedName4.value, selectedName5.value);
+result.value =selectedName1.value + selectedName2.value + selectedName3.value +","+ selectedName4.value +","+ selectedName5.value;
+console.log(result.value);
+let textaudio;
+var myHeaders = new Headers();
+myHeaders.append("Host", "10.1.249.1:9966");
+myHeaders.append("Connection", "close");
+
+var formdata = new FormData();
+formdata.append("text", "已为您生成有关"+voicetext+"包含"+result.value+"等元素的logo， 如有其他需要可点击下方重新生成。");
+formdata.append("voice", "147");
+
+var requestOptions = {
+  method: 'POST',
+  headers: myHeaders,
+  body: formdata,
+  redirect: 'follow'
+};
+//生成界面语音播放 end
+
+const loadingInstance = ElLoading.service({
     fullscreen: true,
-    // text: loadingprogress.value+'%',
+    //text: loadingtext.value+'%',
   });
-  textaudio.volume = 0.5;
-  textaudio.play();
-  loadingtext.value.style.display='block'
   
+loadingtext.value.style.display='block'
     mystring.value=selectedName1.value + ',' + selectedName2.value + ',' + selectedName3.value + ',' + selectedName4.value + ',' + selectedName5.value;
-    // router.push('/logo/view')
-    console.log(selectedName1.value, selectedName2.value, selectedName3.value, selectedName4.value, selectedName5.value);
     const jsonData = {
         "client_id": "cuztest",
         "prompt": {
@@ -333,16 +282,58 @@ const handleCreate = () => {
             "60": { "inputs": { "lora_name": "Hyper-SDXL-8steps-lora.safetensors", "strength_model": 0.7000000000000001, "strength_clip": 1, "model": ["22", 0], "clip": ["22", 1] }, "class_type": "LoraLoader" },
             "61": { "inputs": { "ipadapter_file": "ip-adapter_sdxl.safetensors" }, "class_type": "IPAdapterModelLoader" },
             "63": { "inputs": { "clip_name": "CLIP-ViT-bigG-14-laion2B-39B-b160k.safetensors" }, "class_type": "CLIPVisionLoader" },
-            "3": { "inputs": { "weight": logoname.value?0.8:0, "weight_type": "linear", "combine_embeds": "concat", "start_at": 0, "end_at": 1, "embeds_scaling": "V only", "model": ["27", 0], "ipadapter": ["61", 0], "image": ["2", 0], "clip_vision": ["63", 0] }, "class_type": "IPAdapterAdvanced" },
-            "2": { "inputs": { "image": logoname.value?logoname.value:"", "upload": "image" }, "class_type": "LoadImage" },
+            "3": { "inputs": { "weight": logoname.value.length>0?0.8:0, "weight_type": "linear", "combine_embeds": "concat", "start_at": 0, "end_at": 1, "embeds_scaling": "V only", "model": ["27", 0], "ipadapter": ["61", 0], "image": ["2", 0], "clip_vision": ["63", 0] }, "class_type": "IPAdapterAdvanced" },
+            "2": { "inputs": { "image": logoname.value.length>0?logoname.value:"xiaohui.png", "upload": "image" }, "class_type": "LoadImage" },
             // x"2": { "inputs": { "image": "KUMO.jpg", "upload": "image" }, "class_type": "LoadImage" },
             "100": { "inputs": { "filename_prefix": "Logo", "images": ["52", 0] }, "class_type": "SaveImage" }
         }
     }
 
-    postLogo(jsonData).then((res)=>{
+//语音生成后端请求
+fetch("http://10.1.249.1/tts", requestOptions)
+  .then(response => response.text())
+  .then(result => {
+    //从返回链接中提取出.wav音频链接
+    var additionalElement = ":9966";
+    var indexToInsert = 200; // 从0开始计数
+    
+    // slice()方法获取前半部分和后半部分
+    var firstHalf = result.slice(0, indexToInsert);
+    var secondHalf = result.slice(indexToInsert);
+
+    // concat()方法拼接
+    result = firstHalf + additionalElement + secondHalf;
+
+    // 正则表达式或字符串分割方法来提取链接
+    var urlLinks = result.match(/http[s]?:\/\/[^\s"]+\.wav/i);
+    console.log(result);
+    console.log(urlLinks);
+
+    // 没有找到任何.wav链接，则退出函数
+    if (!urlLinks || urlLinks.length === 0) {
+      console.log('No .wav links found in the result.');
+      return;
+    }
+
+    // 遍历每个提取出的链接
+    urlLinks.forEach(link => {
+      // 创建Audio对象并设置src属性为链接
+      textaudio = new Audio(link);
+      
+      // 捕获并处理错误
+      textaudio.onerror = function() {
+        console.log('Error playing audio:', link);
+      };
+    });
+    
+  })
+  .catch(error => console.log('error', error));
+//语音生成后端请求 end
+
+//logo生成后端请求
+postLogo(jsonData).then((res)=>{
         console.log("提交文字",res)
-        websocket.value = new WebSocket('ws://10.1.249.3:8188/ws?clientId=cuztest');
+        websocket.value = new WebSocket('ws://10.1.249.1/ws');
       websocket.value.onopen = () => {
         console.log('WebSocket connection established.');
       };
@@ -356,6 +347,8 @@ const handleCreate = () => {
             setTimeout(()=>{
                 loadingInstance.close()
             router.push('/logo/view')
+            textaudio.volume = 0.5;
+            textaudio.play();
             },500)
           
         }
@@ -366,7 +359,7 @@ const handleCreate = () => {
                 loadingprogress.value = 94;
             }
             console.log("loadingprogress.value", loadingprogress.value);
-            loadingInstance.text = loadingprogress.value + '%';
+            //loadingInstance.text = loadingprogress.value + '%';
         }
       };
       websocket.value.onclose = () => {
@@ -379,8 +372,6 @@ const handleCreate = () => {
         loadingInstance.close()
         showNotify({ type: "danger", message: "绘图失败,请重试" });
         loadingtext.value.style.display='none'
-
-
       };
 
     })
@@ -388,92 +379,13 @@ const handleCreate = () => {
         console.log("提交文字失败",err)
         loadingInstance.close()
         showNotify({ type: "danger", message: "提交失败,请重试" });
-        loadingtext.value.style.display='none'
-
-
+        loadingtext.value.style.display='none';
     })   
-            
-       
+//logo生成后端请求 end
 
-    // let myweight = 0.6
-    // //  不存在图片weight就为0
-    // // 如果有自定义颜色,添加到颜色数组
-    // if (mycolor.value) {
-    //   selectedName3.value.push(mycolor.value);
-    // }
-
-    // var fd = new FormData();
-
-    // fd.append("logoKeys", logokeysarr.value);
-    // fd.append("language", "chinese simplified");
-    // fd.append("weight", myweight);
-    // fd.append("prompt", "Custom_Logo");
-    // fd.append("client", "cuz");
-    // // getViewApi({prompt_id: "64e8f292-3db5-41cc-b9fa-b37a4e128450", client_id: "client_id_argv" })
-    // // .then((res)=>console.log(res))
-    // console.log("执行生成逻辑", bodyImg, logokeysarr.value);
-    // postGenerateApi(fd, { product: "logo" })
-    //   .then((postres) => {
-    //     console.log("posterupload res", postres);
-
-    //     const intervalId = setInterval(() => {
-    //       if (calledGetViewApi.value) {
-    //         console.log("calledGetViewApi", calledGetViewApi.value);
-
-    //         getViewApi({ prompt_id: postres.prompt_id, client_id: "cuz" })
-    //           .then((response) => {
-    //             console.log("view res", response);
-    //             if (response.statusCode === 200) {
-    //               console.log("绘图成功", response);
-
-    //               const keys = Object.keys(response.data); // 获取对象的所有键
-    //               const firstKey = keys[0]; // 获取数组中的第一个键
-    //               const secondKey = keys[1]; // 获取数组中的第一个键
-    //               const imgurl1 = response.data[firstKey]; // 获取第一个键对应的值
-    //               const imgurl2 = response.data[secondKey]; // 获取第一个键对应的值
-    //               console.log("imgurl,", imgurl1, imgurl2);
-    //               drawStore.logoimgurl1 = imgurl1;
-    //               drawStore.logoimgurl2 = imgurl2;
-
-    //               loadingInstance.close();
-    //               calledGetViewApi.value = false;
-
-    //               clearInterval(intervalId);
-    //               router.push("/logo/view");
-    //             } else if (response.statusCode === 400) {
-    //               console.log("等待绘图中...");
-    //             } else {
-    //               console.log("绘图失败");
-    //               loadingInstance.close();
-    //               // calledGetViewApi.value = false
-
-    //               clearInterval(intervalId);
-    //               showNotify({ type: "danger", message: "绘图失败,请重试" });
-
-    //             }
-    //           })
-    //           .catch((error) => {
-    //             console.error("获取绘图数据失败:", error);
-    //             loadingInstance.close();
-    //             clearInterval(intervalId);
-    //             // showNotify({ type: "danger", message: "网络错误" });
-
-    //             // calledGetViewApi.value = false
-
-    //             // setTimeout(()=>{
-    //             //     router.push("/")
-    //             // },1000)
-    //           });
-    //       }
-    //     }, 2000);
-    //   })
-    //   .catch((error) => {
-    //     console.error("获取上传数据失败:", error);
-    //     showNotify({ type: "danger", message: "网络错误" });
-    //     loadingInstance.close();
-    //   });
 };
 const logoname=ref('')
+logoname.value=""
 const toggleLogoSelection = (logoRef) => {
     clearLogoSelections();
     let errorMessage = '';
@@ -487,8 +399,9 @@ const toggleLogoSelection = (logoRef) => {
             logoname.value='zhongxin.jpg'
             break;
         default:
-            errorMessage = '未选中任何图片'; // 设置错误消息
-            console.error(errorMessage); // 打印错误消息到控制台
+            //errorMessage = '未选中任何图片'; // 设置错误消息
+            //console.error(errorMessage); // 打印错误消息到控制台
+            logoname.value=""
             break;
     }
 
@@ -508,14 +421,22 @@ const clearLogoSelections = () => {
 </script>
 
 <style lang="scss" scoped>
+.background{
+  background-color: rgb(224, 223, 221);
+  width: 9vw;
+  height: 10vw;
+  border:0.1vw solid #a2a3a7;
+  border-radius: 2vw;
+}
+
 .message-box {
-display: flex;
+    display: flex;
 justify-content: center;
 align-items: center;
-height: 15vw;
+height: 16vw;
 width: 60vw;
-margin-left: 5vw;
-margin-top: 2vw;
+margin-left: 10vw;
+margin-top: -8vw;
 border: 1px solid #464646;
 box-shadow: 0px 2px 3.1px 2px rgba(0, 0, 0, 0.11);
 border-radius: 0px 15px 15px 15px;
@@ -563,7 +484,7 @@ width: 50vw;
 
 .item-container1 .selected {
     background-color: white;
-    background-image: url('src/assets/images/diamond1.png');
+    background-image: url('@/assets/images/diamond1.png');
 }
 
 .item-container2 {
@@ -578,7 +499,7 @@ width: 50vw;
 
 .item-container2 .selected {
     background-color: white;
-    background-image: url('src/assets/images/diamond1.png');
+    background-image: url('@/assets/images/diamond1.png');
 }
 
 .item-container3 {
@@ -593,7 +514,7 @@ width: 50vw;
 
 .item-container3 .selected {
     background-color: white;
-    background-image: url('src/assets/images/diamond1.png');
+    background-image: url('@/assets/images/diamond1.png');
 }
 
 .item-container4 {
@@ -621,7 +542,7 @@ width: 50vw;
 
 .item-container5 .selected {
     background-color: white;
-    background-image: url('src/assets/images/label1.png');
+    background-image: url('@/assets/images/label1.png');
 }
 
 .xuanxiang1 {
@@ -646,7 +567,7 @@ width: 50vw;
     /* 设置垂直书写模式 */
     text-orientation: mixed;
     /* 确保文字方向混合 */
-    background-image: url('src/assets/images/diamond.png');
+    background-image: url('@/assets/images/diamond.png');
     /* 用你的图片路径替换 'src/assets/images/diamond.png' */
     background-size: cover;
     /* 确保背景图案覆盖整个区域 */
@@ -682,7 +603,7 @@ width: 50vw;
     cursor: pointer;
     overflow: hidden;
     /* 确保溢出部分被隐藏 */
-    background-image: url('src/assets/images/label.png');
+    background-image: url('@/assets/images/label.png');
     background-size: cover;
     /* 确保背景图案覆盖整个区域 */
     font-size: 3vw;
@@ -719,7 +640,7 @@ width: 50vw;
     width: 13vw;
     height: 12vw;
     left: 78vw;
-    top: 66vw;
+    top: 73vw;
     border: 0.5vw solid #92b0fd; 
     // top:103vw;
 
@@ -730,7 +651,7 @@ width: 50vw;
     width: 13vw;
     height: 12vw;
     left: 78vw;
-    top: 82vw;
+    top: 90vw;
     border: 0.5vw solid #92b0fd; 
 }
 
@@ -742,9 +663,9 @@ width: 50vw;
     width: 6vw;
     text-align: center;
     font-size: 4vw;
-    position: absolute;
-    left: 50%;
-    top: 55%;
+    position: fixed;
+    top: 57vh;
+    left: 48vw;
     margin-left: -3vw;
     margin-top: -3vw;
     color: #1989fa;

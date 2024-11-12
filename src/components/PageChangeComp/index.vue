@@ -49,14 +49,14 @@ const handleCreate = () => {
 
 <style scoped>
 .van-button {
-    position: absolute;
+    position: relative;
     width: 32.4vw;
     height: 9.72vw;
     font-size: 4vw;
     font-weight: bold;
     /* letter-spacing: 5px; */
-    position: absolute;
-    bottom: 0vw;
+    top: 5vw;
+    left: 20vw;
     border-radius: 1vw;
     /* top: 730px; */
     border:0.5vw solid #4768FF;
